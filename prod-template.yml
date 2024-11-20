@@ -193,7 +193,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /ecs/api
-      RetentionInDays: 14
+      RetentionInDays: 15
 
 Outputs:
   ServiceURL:
