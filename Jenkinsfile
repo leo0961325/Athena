@@ -104,6 +104,19 @@ pipeline {
             }
         }
 
+        stage('Cleanup Failed Stack') {
+            steps {
+                withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                    sh """
+                        if aws cloudformation describe-stacks --stack-name api-stack-${params.ENV} 2>/dev/null | grep 'ROLLBACK_COMPLETE'; then
+                            aws cloudformation delete-stack --stack-name api-stack-${params.ENV}
+                            aws cloudformation wait stack-delete-complete --stack-name api-stack-${params.ENV}
+                        fi
+                    """
+                }
+            }
+        }
+
         stage('Deploy CloudFormation') {
             steps {
                 script {
