@@ -10,19 +10,90 @@ pipeline {
         AWS_CREDENTIALS = credentials('aws-credentials')
         AWS_ACCOUNT_ID = '194722439964'
         AWS_REGION = 'ap-southeast-1'
+        ECR_REPO_NAME = 'athena'
     }
 
     stages {
+        stage('Environment Check') {
+            steps {
+                sh '''
+                    aws --version
+                    docker --version
+                    ./gradlew --version
+                '''
+            }
+        }
+
+        stage('Template Validation') {
+            steps {
+                script {
+                    try {
+                        sh """
+                            pwd
+                            ls -la
+                            echo "Looking for template: ${params.ENV}-template.yml"
+                            if [ ! -f "${params.ENV}-template.yml" ]; then
+                                echo "Template file not found!"
+                                exit 1
+                            fi
+                            aws cloudformation validate-template --template-body file://${params.ENV}-template.yml
+                        """
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error "Template 驗證失敗: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+
+        stage('Create ECR Repository') {
+            steps {
+                script {
+                    try {
+                        withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                            sh '''
+                                aws ecr describe-repositories --repository-names ${ECR_REPO_NAME} || \
+                                aws ecr create-repository --repository-name ${ECR_REPO_NAME} \
+                                    --image-scanning-configuration scanOnPush=true \
+                                    --encryption-configuration encryptionType=AES256
+                            '''
+                        }
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error "ECR Repository 建立失敗: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+
+        stage('ECR Login') {
+            steps {
+                script {
+                    try {
+                        withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                            sh '''
+                                aws ecr get-login-password --region ${AWS_REGION} | \
+                                docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                            '''
+                        }
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error "ECR 登入失敗: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+
         stage('Build & Push') {
             steps {
                 script {
                     try {
                         withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
                             sh '''
-                                aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                                 ./gradlew jib \
                                     -Penv=${ENV} \
-                                    -Prepo=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                                    -Prepo=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME} \
+                                    --stacktrace
                             '''
                         }
                     } catch (Exception e) {
@@ -39,17 +110,31 @@ pipeline {
                     try {
                         withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
                             sh """
+                                echo "Deploying stack: api-stack-${params.ENV}"
                                 aws cloudformation deploy \
                                     --template-file ${params.ENV}-template.yml \
                                     --stack-name api-stack-${params.ENV} \
                                     --parameter-overrides \
                                         CommitHash=${params.COMMIT_HASH} \
+                                        Environment=${params.ENV} \
                                     --capabilities CAPABILITY_NAMED_IAM \
-                                    --debug
+                                    --no-fail-on-empty-changeset
+
+                                echo "Checking deployment status..."
+                                aws cloudformation describe-stacks \
+                                    --stack-name api-stack-${params.ENV} \
+                                    --query 'Stacks[0].StackStatus' \
+                                    --output text
                             """
                         }
                     } catch (Exception e) {
-                        sh 'aws cloudformation validate-template --template-file ${params.ENV}-template.yml'
+                        sh """
+                            echo "Fetching stack events..."
+                            aws cloudformation describe-stack-events \
+                                --stack-name api-stack-${params.ENV} \
+                                --query 'StackEvents[?ResourceStatus==`CREATE_FAILED`]'
+                        """
+                        currentBuild.result = 'FAILURE'
                         error "CloudFormation部署失敗: ${e.getMessage()}"
                     }
                 }
@@ -65,7 +150,13 @@ pipeline {
             echo 'Pipeline執行成功!'
         }
         always {
-            cleanWs()
+            script {
+                sh """
+                    echo "清理 Docker 登入憑證..."
+                    rm -f ~/.docker/config.json || true
+                """
+                cleanWs()
+            }
         }
     }
 }
