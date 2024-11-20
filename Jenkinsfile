@@ -19,7 +19,7 @@ pipeline {
                     try {
                         withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
                             sh '''
-                                gradle jib \
+                                ./gradlew jib \
                                     -Penv=${ENV} \
                                     -Prepo=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                             '''
