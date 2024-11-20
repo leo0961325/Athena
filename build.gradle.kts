@@ -60,6 +60,8 @@ jib {
     }
     to {
         image = "194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena"
-        credHelper = "ecr-login"
+        auth {
+            credHelper = "ecr-login"
+        }
     }
 }
