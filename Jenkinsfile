@@ -43,11 +43,12 @@ pipeline {
                                     --stack-name api-stack-${params.ENV} \
                                     --parameter-overrides \
                                         CommitHash=${params.COMMIT_HASH} \
-                                    --capabilities CAPABILITY_NAMED_IAM
+                                    --capabilities CAPABILITY_NAMED_IAM \
+                                    --debug
                             """
                         }
                     } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
+                        sh 'aws cloudformation validate-template --template-file ${params.ENV}-template.yml'
                         error "CloudFormation部署失敗: ${e.getMessage()}"
                     }
                 }
