@@ -1,0 +1,10 @@
+Resources:
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: api-service
+      ContainerDefinitions:
+        - Name: api
+          Image: 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/Athena:latest
+          PortMappings:
+            - ContainerPort: 8080
