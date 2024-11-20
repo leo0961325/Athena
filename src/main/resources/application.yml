@@ -21,7 +21,7 @@ spring:
         order_updates: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://database-1.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenaDB?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
     username: root
     password: rootroot
     hikari:

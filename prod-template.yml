@@ -263,9 +263,9 @@ Parameters:
             - Name: SPRING_DATASOURCE_URL
               Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
             - Name: SPRING_DATASOURCE_USERNAME
-              Value: !Ref DBUsername
+              Value: !Ref root
             - Name: SPRING_DATASOURCE_PASSWORD
-              Value: !Ref DBPassword
+              Value: !Ref rootroot
           PortMappings:
             - ContainerPort: 8080
           LogConfiguration:
