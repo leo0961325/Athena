@@ -55,6 +55,9 @@ tasks.withType<Test> {
 }
 
 jib {
+    container {
+        format = com.google.cloud.tools.jib.api.buildplan.ImageFormat.Docker
+    }
     to {
         image = "194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena"
         credHelper = "ecr-login"
