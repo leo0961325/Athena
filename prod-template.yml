@@ -21,13 +21,13 @@ Resources:
         - Name: api
           Image: 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:latest
           Essential: true
-#          Environment:
-#            - Name: SPRING_DATASOURCE_URL
-#              Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
-#            - Name: SPRING_DATASOURCE_USERNAME
-#              Value: root
-#            - Name: SPRING_DATASOURCE_PASSWORD
-#              Value: rootroot
+          Environment:
+            - Name: SPRING_DATASOURCE_URL
+              Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
+            - Name: SPRING_DATASOURCE_USERNAME
+              Value: root
+            - Name: SPRING_DATASOURCE_PASSWORD
+              Value: rootroot
           PortMappings:
             - ContainerPort: 8080
           LogConfiguration:
@@ -109,13 +109,9 @@ Resources:
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 8080
-          ToPort: 8080
-          SourceSecurityGroupId: !Ref ALBSecurityGroup
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
-          CidrIp: 10.0.0.0/16
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
 
   ECSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -127,6 +123,12 @@ Resources:
           FromPort: 8080
           ToPort: 8080
           SourceSecurityGroupId: !Ref ALBSecurityGroup
+        # 添加對RDS的訪問
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 10.0.0.0/16  # VPC CIDR
+
 
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
