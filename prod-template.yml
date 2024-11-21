@@ -9,7 +9,7 @@ Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Family: !Ref AWS::StackName
+      Family: !Sub ${AWS::StackName}-${AWS::Region}-${AWS::AccountId}
       RequiresCompatibilities:
         - "FARGATE"
       NetworkMode: "awsvpc"
@@ -30,6 +30,8 @@ Resources:
               Value: root
             - Name: SPRING_DATASOURCE_PASSWORD
               Value: rootroot
+            - Name: STACK_ID
+              Value: !Ref AWS::StackId
           PortMappings:
             - ContainerPort: 8080
           LogConfiguration:
