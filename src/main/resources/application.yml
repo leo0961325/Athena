@@ -21,6 +21,9 @@ spring:
         order_updates: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+#   local
+#    url: jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+#   prod
     url: jdbc:mysql://api-stack-prod-database-mnd2lqjnlvq4.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenadb?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
     username: root
     password: rootroot
@@ -38,3 +41,13 @@ server:
     enabled: true
     min-response-size: 10
   shutdown: "graceful"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health    # 只開放 health endpoint
+      base-path: /actuator # 設置基礎路徑
+  endpoint:
+    health:
+      show-details: always # 顯示詳細的健康檢查信息
