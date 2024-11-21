@@ -4,12 +4,15 @@ Parameters:
     Type: String
     Description: Your development IP address
     Default: 0.0.0.0/0
+  DeploymentTime:
+    Type: String
+    Description: Deployment timestamp
 
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Family: !Sub ${AWS::StackName}-${AWS::Region}-${AWS::AccountId}
+      Family: api-service
       RequiresCompatibilities:
         - "FARGATE"
       NetworkMode: "awsvpc"
@@ -30,8 +33,8 @@ Resources:
               Value: root
             - Name: SPRING_DATASOURCE_PASSWORD
               Value: rootroot
-            - Name: STACK_ID
-              Value: !Ref AWS::StackId
+            - Name: DEPLOYMENT_TIME
+              Value: !Ref DeploymentTime
           PortMappings:
             - ContainerPort: 8080
           LogConfiguration:

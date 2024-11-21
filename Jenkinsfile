@@ -122,6 +122,15 @@ pipeline {
                 script {
                     try {
                         withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                            def timestamp = new Date().format("yyyyMMddHHmmss")
+                                        sh """
+                                            aws cloudformation deploy \
+                                                --template-file ${params.ENV}-template.yml \
+                                                --stack-name api-stack-${params.ENV} \
+                                                --parameter-overrides \
+                                                    DeploymentTime=${timestamp} \
+                                                --capabilities CAPABILITY_NAMED_IAM
+                                        """
                             sh """
                                 echo "Deploying stack: api-stack-${params.ENV}"
                                 aws cloudformation deploy \
@@ -153,29 +162,7 @@ pipeline {
                 }
             }
         }
-        stage('Force Update ECS') {
-           steps {
-               script {
-                   withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
-                       def timestamp = new Date().format("yyyyMMddHHmmss")
 
-                       sh """
-                           # 為映像打上新標籤
-                           docker tag 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:latest 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:${timestamp}
-
-                           # 推送新標籤的映像
-                           docker push 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:${timestamp}
-
-                           # 更新服務
-                           aws ecs update-service \
-                               --cluster api-cluster \
-                               --service api-service \
-                               --force-new-deployment
-                       """
-                   }
-               }
-           }
-        }
     }
 
     post {
