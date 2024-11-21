@@ -130,6 +130,7 @@ pipeline {
                                     --parameter-overrides \
                                         CommitHash=${params.COMMIT_HASH} \
                                         Environment=${params.ENV} \
+                                        BUILD_NUMBER=${BUILD_NUMBER} \
                                     --capabilities CAPABILITY_NAMED_IAM \
 
 

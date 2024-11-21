@@ -4,6 +4,9 @@ Parameters:
     Type: String
     Description: Your development IP address
     Default: 0.0.0.0/0
+  BUILD_NUMBER:
+    Type: String
+    Description: Jenkins build number
 
 Resources:
   TaskDefinition:
