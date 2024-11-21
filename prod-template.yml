@@ -4,9 +4,6 @@ Parameters:
     Type: String
     Description: Your development IP address
     Default: 0.0.0.0/0
-  CommitHash:
-    Type: String
-    Description: Git commit hash
 
 Resources:
   TaskDefinition:
@@ -36,8 +33,6 @@ Resources:
               Value: root
             - Name: SPRING_DATASOURCE_PASSWORD
               Value: rootroot
-            - Name: COMMIT_HASH
-              Value: !Ref CommitHash
           PortMappings:
             - ContainerPort: 8080
           LogConfiguration:
@@ -182,9 +177,6 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
       DesiredCount: 1
       LaunchType: FARGATE
-      DeploymentConfiguration:
-        MaximumPercent: 200
-        MinimumHealthyPercent: 50
       HealthCheckGracePeriodSeconds: 60
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -198,6 +190,10 @@ Resources:
         - ContainerName: api
           ContainerPort: 8080
           TargetGroupArn: !Ref TargetGroup
+      DeploymentConfiguration:
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
 
 
   ECSExecutionRole:

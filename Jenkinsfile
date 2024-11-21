@@ -122,8 +122,6 @@ pipeline {
                 script {
                     try {
                         withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
-                            // 取得最新的 git commit hash
-                            def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                             sh """
                                 echo "Deploying stack: api-stack-${params.ENV}"
                                 aws cloudformation deploy \
