@@ -133,6 +133,13 @@ pipeline {
                                     --capabilities CAPABILITY_NAMED_IAM \
 
 
+                                    TASK_DEF=\$(aws ecs list-task-definitions --family-prefix api-service --sort DESC --max-items 1 --query 'taskDefinitionArns[0]' --output text)
+                                    aws ecs update-service \
+                                        --cluster api-cluster \
+                                        --service api-service \
+                                        --task-definition \$TASK_DEF \
+                                        --force-new-deployment
+
                                 echo "Checking deployment status..."
                                 aws cloudformation describe-stacks \
                                     --stack-name api-stack-${params.ENV} \
