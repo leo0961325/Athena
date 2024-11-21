@@ -22,12 +22,13 @@ Resources:
       TaskRoleArn: !GetAtt ECSTaskRole.Arn
       ContainerDefinitions:
         - Name: api
-          Image: 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:!Ref BuildNumber
+          Image: !Sub 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:${BuildNumber}
           Essential: true
           Environment:
             - Name: SPRING_DATASOURCE_URL
-              Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
-#              Value: jdbc:mysql://api-stack-prod-database-cwoejkxecuzb.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenadb
+#              Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
+#              可能固定就可以持久化
+              Value: jdbc:mysql://api-stack-prod-database-uft7lg447cbp.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenadb
             - Name: SPRING_DATASOURCE_USERNAME
               Value: root
             - Name: SPRING_DATASOURCE_PASSWORD

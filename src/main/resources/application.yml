@@ -25,7 +25,7 @@ spring:
 #   local
 #    url: jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
 #   prod
-    url: jdbc:mysql://api-stack-prod-database-cwoejkxecuzb.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenadb?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://api-stack-prod-database-uft7lg447cbp.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenadb?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
     username: root
     password: rootroot
     hikari:
