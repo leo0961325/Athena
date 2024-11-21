@@ -154,29 +154,25 @@ pipeline {
             }
         }
         stage('Force Update ECS') {
-           steps {
-               script {
-                   withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
-                       sh """
-                           TASK_FAMILY="api-service"
-                           CLUSTER="api-cluster"
-                           SERVICE="api-service"
+            steps {
+                script {
+                    withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                        def timestamp = new Date().format("yyyyMMddHHmmss")
 
-                           CURRENT_TASK_DEF=\$(aws ecs describe-services \
-                               --cluster \$CLUSTER \
-                               --services \$SERVICE \
-                               --query 'services[0].taskDefinition' \
-                               --output text)
+                        sh """
+                            # 從最新 image 建立帶時間戳的 tag
+                            aws ecr docker tag athena:latest athena:${timestamp}
+                            aws ecr docker push athena:${timestamp}
 
-                           aws ecs update-service \
-                               --cluster \$CLUSTER \
-                               --service \$SERVICE \
-                               --task-definition \$CURRENT_TASK_DEF \
-                               --force-new-deployment
-                       """
-                   }
-               }
-           }
+                            # 更新 service 使用新 tag
+                            aws ecs update-service \
+                                --cluster api-cluster \
+                                --service api-service \
+                                --force-new-deployment
+                        """
+                    }
+                }
+            }
         }
     }
 
