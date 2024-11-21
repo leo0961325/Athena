@@ -252,8 +252,8 @@ Resources:
 
   Database:
     Type: AWS::RDS::DBInstance
-    DeletionPolicy: Retain          # 添加這行，防止刪除
-    UpdateReplacePolicy: Retain     # 添加這行，防止替換
+#    DeletionPolicy: Retain          # 添加這行，防止刪除
+#    UpdateReplacePolicy: Retain     # 添加這行，防止替換
     Properties:
       DBName: athenadb
       Engine: mysql
