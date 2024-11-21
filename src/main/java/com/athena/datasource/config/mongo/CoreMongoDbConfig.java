@@ -1,4 +1,4 @@
-package com.athena.db;
+package com.athena.datasource.config.mongo;
 
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @EnableMongoAuditing
 @EnableMongoRepositories(
-    basePackages = "com.athena",
+    basePackages = "com.athena.datasource.mongo",
     excludeFilters =
         @ComponentScan.Filter(type = FilterType.ANNOTATION))
 @Configuration

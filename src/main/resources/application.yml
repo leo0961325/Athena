@@ -10,8 +10,9 @@ spring:
     properties:
       hibernate:
         connection:
-          provider_disables_autocommit: true
+          provider_disables_autocommit: false
     hibernate:
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       jdbc:
@@ -20,7 +21,7 @@ spring:
         order_inserts: true
         order_updates: true
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
 #   local
 #    url: jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
 #   prod
