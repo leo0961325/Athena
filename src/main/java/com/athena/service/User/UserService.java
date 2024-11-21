@@ -37,7 +37,7 @@ public class UserService {
         addUserResp.setEmail(userSaved.getEmail());
         addUserResp.setPhone(userSaved.getPhone());
         addUserResp.setEnabled(userSaved.isEnabled());
-        addUserResp.setTest("我要看yoasobi");
+        addUserResp.setTest("test2349999");
         return addUserResp;
 
     }
