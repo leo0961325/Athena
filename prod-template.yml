@@ -250,30 +250,26 @@ Parameters:
     Description: Your development IP address
     Default: 0.0.0.0/0
 
-  # 修改 TaskDefinition 的 ContainerDefinitions，添加環境變數：
-  TaskDefinition:
-    Type: AWS::ECS::TaskDefinition
-    Properties:
-      # ... 其他設定保持不變 ...
-      ContainerDefinitions:
-        - Name: api
-          Image: 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:latest
-          Essential: true
-          Environment:
-            - Name: SPRING_DATASOURCE_URL
-              Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
-            - Name: SPRING_DATASOURCE_USERNAME
-              Value: !Ref root
-            - Name: SPRING_DATASOURCE_PASSWORD
-              Value: !Ref rootroot
-          PortMappings:
-            - ContainerPort: 8080
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-group: !Ref LogGroup
-              awslogs-region: ap-southeast-1
-              awslogs-stream-prefix: api
+
+  ContainerDefinitions:
+    - Name: api
+      Image: 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:latest
+      Essential: true
+      Environment:
+        - Name: SPRING_DATASOURCE_URL
+          Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
+        - Name: SPRING_DATASOURCE_USERNAME
+          Value: !Ref root
+        - Name: SPRING_DATASOURCE_PASSWORD
+          Value: !Ref rootroot
+      PortMappings:
+        - ContainerPort: 8080
+      LogConfiguration:
+        LogDriver: awslogs
+        Options:
+          awslogs-group: !Ref LogGroup
+          awslogs-region: ap-southeast-1
+          awslogs-stream-prefix: api
 
 # 在 Outputs 添加 RDS 相關輸出：
 Outputs:
