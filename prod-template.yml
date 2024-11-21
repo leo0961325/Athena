@@ -207,7 +207,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /ecs/api
-      RetentionInDays: 15
+      RetentionInDays: 14
 
   DBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
