@@ -37,7 +37,7 @@ public class UserService {
         addUserResp.setEmail(userSaved.getEmail());
         addUserResp.setPhone(userSaved.getPhone());
         addUserResp.setEnabled(userSaved.isEnabled());
-        addUserResp.setTest("周傑倫演唱會");
+        addUserResp.setTest("YOASOBI !!!!");
         return addUserResp;
 
     }
