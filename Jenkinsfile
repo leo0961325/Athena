@@ -153,6 +153,32 @@ pipeline {
                 }
             }
         }
+        stage('Force Update ECS') {
+            steps {
+                script {
+                    withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                        // 註冊新的 task definition
+                        def taskDef = sh(
+                            script: "aws ecs describe-task-definition --task-definition api-service --query 'taskDefinition' --output json",
+                            returnStdout: true
+                        ).trim()
+
+                        sh """
+                            echo '$taskDef' > task-def.json
+                            aws ecs register-task-definition --cli-input-json file://task-def.json
+
+                            NEW_TASK_DEF=\$(aws ecs describe-task-definition --task-definition api-service --query 'taskDefinition.taskDefinitionArn' --output text)
+
+                            aws ecs update-service \
+                                --cluster api-cluster \
+                                --service api-service \
+                                --task-definition \$NEW_TASK_DEF \
+                                --force-new-deployment
+                        """
+                    }
+                }
+            }
+        }
     }
 
     post {
