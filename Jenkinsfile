@@ -154,30 +154,29 @@ pipeline {
             }
         }
         stage('Force Update ECS') {
-            steps {
-                script {
-                    withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
-                        // 註冊新的 task definition
-                        def taskDef = sh(
-                            script: "aws ecs describe-task-definition --task-definition api-service --query 'taskDefinition' --output json",
-                            returnStdout: true
-                        ).trim()
+           steps {
+               script {
+                   withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                       sh """
+                           TASK_FAMILY="api-service"
+                           CLUSTER="api-cluster"
+                           SERVICE="api-service"
 
-                        sh """
-                            echo '$taskDef' > task-def.json
-                            aws ecs register-task-definition --cli-input-json file://task-def.json
+                           CURRENT_TASK_DEF=\$(aws ecs describe-services \
+                               --cluster \$CLUSTER \
+                               --services \$SERVICE \
+                               --query 'services[0].taskDefinition' \
+                               --output text)
 
-                            NEW_TASK_DEF=\$(aws ecs describe-task-definition --task-definition api-service --query 'taskDefinition.taskDefinitionArn' --output text)
-
-                            aws ecs update-service \
-                                --cluster api-cluster \
-                                --service api-service \
-                                --task-definition \$NEW_TASK_DEF \
-                                --force-new-deployment
-                        """
-                    }
-                }
-            }
+                           aws ecs update-service \
+                               --cluster \$CLUSTER \
+                               --service \$SERVICE \
+                               --task-definition \$CURRENT_TASK_DEF \
+                               --force-new-deployment
+                       """
+                   }
+               }
+           }
         }
     }
 
