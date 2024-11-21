@@ -36,6 +36,8 @@ Resources:
               Value: root
             - Name: SPRING_DATASOURCE_PASSWORD
               Value: rootroot
+            - Name: DEPLOY_TIME
+              Value: !Ref AWS::Timestamp # 每次部署會有不同值
           PortMappings:
             - ContainerPort: 8080
           LogConfiguration:
