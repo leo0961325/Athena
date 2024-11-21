@@ -215,20 +215,20 @@ Resources:
       RetentionInDays: 14
 
 
-#  DBSecurityGroup:
-#    Type: AWS::EC2::SecurityGroup
-#    Properties:
-#      GroupDescription: RDS Security Group
-#      VpcId: !Ref VPC
-#      SecurityGroupIngress:
-#        - IpProtocol: tcp
-#          FromPort: 3306
-#          ToPort: 3306
-#          SourceSecurityGroupId: !Ref ECSSecurityGroup
-#        - IpProtocol: tcp
-#          FromPort: 3306
-#          ToPort: 3306
-#          CidrIp: !Ref DevIP
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: RDS Security Group
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref ECSSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: !Ref DevIP
 
 #  DBSubnetGroup:
 #    Type: AWS::RDS::DBSubnetGroup
