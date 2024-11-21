@@ -28,7 +28,7 @@ Resources:
             - Name: SPRING_DATASOURCE_URL
               Value: !Join ['', ['jdbc:mysql://', !GetAtt Database.Endpoint.Address, ':3306/athenadb']]
 #              可能固定就可以持久化
-#              Value: jdbc:mysql://api-stack-prod-database-uft7lg447cbp.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenadb
+#              Value: jdbc:mysql://api-stack-prod-database-fhpyn3557pfy.czmi06oc4ahh.ap-southeast-1.rds.amazonaws.com:3306/athenadb
             - Name: SPRING_DATASOURCE_USERNAME
               Value: root
             - Name: SPRING_DATASOURCE_PASSWORD
@@ -172,8 +172,6 @@ Resources:
     Type: AWS::ECS::Service
     DependsOn: ListenerHTTP
     Properties:
-#     force deploy
-      ForceNewDeployment: true
       ServiceName: api-service
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref TaskDefinition
