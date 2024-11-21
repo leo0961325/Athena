@@ -11,7 +11,7 @@ Resources:
     UpdateReplacePolicy: Replace
     DeletionPolicy: Delete
     Properties:
-      Family: api-service
+      Family: !Ref AWS::StackName
       RequiresCompatibilities:
         - "FARGATE"
       NetworkMode: "awsvpc"
