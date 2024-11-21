@@ -4,12 +4,18 @@ Parameters:
     Type: String
     Description: Your development IP address
     Default: 0.0.0.0/0
+  CommitHash:
+    Type: String
+    Description: Git commit hash
 
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: api-service
+      Tags:
+        - Key: Version
+          Value: !Ref CommitHash
       RequiresCompatibilities:
         - "FARGATE"
       NetworkMode: "awsvpc"
