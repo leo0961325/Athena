@@ -16,4 +16,5 @@ public class User {
     private String email;
     private String phone;
     private boolean enabled;
+    private String role;
 }
