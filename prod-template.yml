@@ -166,6 +166,10 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
       DesiredCount: 1
       LaunchType: FARGATE
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 50
+      HealthCheckGracePeriodSeconds: 60
       NetworkConfiguration:
         AwsvpcConfiguration:
           Subnets:
@@ -178,6 +182,7 @@ Resources:
         - ContainerName: api
           ContainerPort: 8080
           TargetGroupArn: !Ref TargetGroup
+
 
   ECSExecutionRole:
     Type: AWS::IAM::Role
@@ -245,7 +250,7 @@ Resources:
       VPCSecurityGroups:
         - !Ref DBSecurityGroup
       DBSubnetGroupName: !Ref DBSubnetGroup
-      BackupRetentionPeriod: 7
+      BackupRetentionPeriod: 0
       MultiAZ: false
 
 Outputs:
