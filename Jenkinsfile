@@ -140,12 +140,6 @@ pipeline {
                                     --output text
                             """
 
-                            // 強制更新 ECS 服務
-                            sh """
-                                SERVICE_ARN=\$(aws ecs list-services --cluster api-cluster --query 'serviceArns[0]' --output text)
-                                aws ecs update-service --cluster api-cluster --service \$SERVICE_ARN --force-new-deployment
-                            """
-
                         }
                     } catch (Exception e) {
                         sh """
