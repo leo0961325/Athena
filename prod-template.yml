@@ -168,6 +168,8 @@ Resources:
     Type: AWS::ECS::Service
     DependsOn: ListenerHTTP
     Properties:
+#     force deploy
+      ForceNewDeployment: true
       ServiceName: api-service
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref TaskDefinition
