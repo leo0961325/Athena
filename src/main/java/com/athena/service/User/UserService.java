@@ -26,7 +26,9 @@ public class UserService {
         user.setPassword(addUserReq.getPassword());
         user.setEmail(addUserReq.getEmail());
         user.setPhone(addUserReq.getPhone());
+        user.setEnabled(addUserReq.isEnabled());
         User userSaved = userDao.save(user);
+
         AddUserResp addUserResp = new AddUserResp();
 
         addUserResp.setId(userSaved.getId());
@@ -34,6 +36,7 @@ public class UserService {
         addUserResp.setPassword(userSaved.getPassword());
         addUserResp.setEmail(userSaved.getEmail());
         addUserResp.setPhone(userSaved.getPhone());
+        addUserResp.setEnabled(userSaved.isEnabled());
         return addUserResp;
 
     }
@@ -47,6 +50,7 @@ public class UserService {
             getUserResp.setPassword(userOpt.get().getPassword());
             getUserResp.setEmail(userOpt.get().getEmail());
             getUserResp.setPhone(userOpt.get().getPhone());
+            getUserResp.setEnabled(userOpt.get().isEnabled());
             return getUserResp;
         }
         return null;

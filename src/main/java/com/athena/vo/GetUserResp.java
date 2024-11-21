@@ -10,4 +10,5 @@ public class GetUserResp {
     private String password;
     private String email;
     private String phone;
+    private boolean enabled;
 }
