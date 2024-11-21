@@ -4,9 +4,6 @@ Parameters:
     Type: String
     Description: Your development IP address
     Default: 0.0.0.0/0
-  BuildNumber:
-    Type: String
-    Description: Jenkins build number
 
 Resources:
   TaskDefinition:
@@ -22,7 +19,7 @@ Resources:
       TaskRoleArn: !GetAtt ECSTaskRole.Arn
       ContainerDefinitions:
         - Name: api
-          Image: !Sub 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:${BuildNumber}
+          Image: 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:latest
           Essential: true
           Environment:
             - Name: SPRING_DATASOURCE_URL
