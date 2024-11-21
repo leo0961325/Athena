@@ -37,6 +37,7 @@ public class UserService {
         addUserResp.setEmail(userSaved.getEmail());
         addUserResp.setPhone(userSaved.getPhone());
         addUserResp.setEnabled(userSaved.isEnabled());
+        addUserResp.setTest("aaaaa1");
         return addUserResp;
 
     }

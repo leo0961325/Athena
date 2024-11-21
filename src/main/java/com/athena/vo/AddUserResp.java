@@ -11,4 +11,5 @@ public class AddUserResp {
     private String email;
     private String phone;
     private boolean enabled;
+    private String test;
 }
