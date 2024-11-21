@@ -153,22 +153,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Force Update ECS') {
-           steps {
-               script {
-                   sh """
-                       SERVICE_TASK_DEF=\$(aws ecs describe-services --cluster api-cluster --services api-service --query 'services[0].taskDefinition' --output text)
-
-                       aws ecs update-service \
-                           --cluster api-cluster \
-                           --service api-service \
-                           --task-definition \$SERVICE_TASK_DEF \
-                           --force-new-deployment
-                   """
-               }
-           }
-        }
     }
 
     post {
