@@ -248,7 +248,7 @@ Parameters:
   DevIP:
     Type: String
     Description: Your development IP address
-    Default: 218.35.165.191/32
+    Default: 0.0.0.0/0
 
   # 修改 TaskDefinition 的 ContainerDefinitions，添加環境變數：
   TaskDefinition:
@@ -277,7 +277,6 @@ Parameters:
 
 # 在 Outputs 添加 RDS 相關輸出：
 Outputs:
-  # ... 原有的輸出保持不變 ...
   RDSEndpoint:
     Description: RDS Endpoint
     Value: !GetAtt Database.Endpoint.Address
