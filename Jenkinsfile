@@ -123,30 +123,52 @@ pipeline {
                     try {
                         withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
 
+//                             sh """
+//                                 echo "Deploying stack: api-stack-${params.ENV}"
+//                                 aws cloudformation deploy \
+//                                     --template-file ${params.ENV}-template.yml \
+//                                     --stack-name api-stack-${params.ENV} \
+//                                     --parameter-overrides \
+//                                         CommitHash=${params.COMMIT_HASH} \
+//                                         Environment=${params.ENV} \
+//                                     --capabilities CAPABILITY_NAMED_IAM \
+//
+//
+//                                 echo "Checking deployment status..."
+//                                 aws cloudformation describe-stacks \
+//                                     --stack-name api-stack-${params.ENV} \
+//                                     --query 'Stacks[0].StackStatus' \
+//                                     --output text
+//                             """
+//                             // 更新 ECS service
+//                            sh  """
+//                                aws ecs update-service \
+//                                    --cluster api-cluster \
+//                                    --service api-service \
+//                                    --force-new-deployment
+//                                """
                             sh """
-                                echo "Deploying stack: api-stack-${params.ENV}"
-                                aws cloudformation deploy \
-                                    --template-file ${params.ENV}-template.yml \
-                                    --stack-name api-stack-${params.ENV} \
-                                    --parameter-overrides \
-                                        CommitHash=${params.COMMIT_HASH} \
-                                        Environment=${params.ENV} \
-                                    --capabilities CAPABILITY_NAMED_IAM \
+                                            aws ecs update-service \
+                                                --cluster api-cluster \
+                                                --service api-service \
+                                                --force-new-deployment \
+                                                --task-definition $(aws ecs describe-task-definition \
+                                                    --task-definition api-service \
+                                                    --query 'taskDefinition.taskDefinitionArn' \
+                                                    --output text)
+                                        """
 
-
-                                echo "Checking deployment status..."
-                                aws cloudformation describe-stacks \
-                                    --stack-name api-stack-${params.ENV} \
-                                    --query 'Stacks[0].StackStatus' \
-                                    --output text
-                            """
-                            // 更新 ECS service
-                           sh  """
-                               aws ecs update-service \
-                                   --cluster api-cluster \
-                                   --service api-service \
-                                   --force-new-deployment
-                               """
+                                        sh """
+                                            aws cloudformation deploy \
+                                                --template-file ${params.ENV}-template.yml \
+                                                --stack-name api-stack-${params.ENV} \
+                                                --parameter-overrides \
+                                                    CommitHash=${params.COMMIT_HASH} \
+                                                    Environment=${params.ENV} \
+                                                    DevIP=0.0.0.0/0 \
+                                                    BuildNumber=${BUILD_NUMBER} \
+                                                --capabilities CAPABILITY_NAMED_IAM
+                                        """
                         }
                     } catch (Exception e) {
                         sh """
