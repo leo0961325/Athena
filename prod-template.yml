@@ -4,7 +4,7 @@ Parameters:
     Type: String
     Description: Your development IP address
     Default: 0.0.0.0/0
-  DeploymentTime:
+  DeploymentTime: #可以讓每一次ECS都強制更新搜尋關鍵字'DeploymentTime'
     Type: String
     Description: Deployment timestamp
 
