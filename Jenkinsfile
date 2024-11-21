@@ -122,13 +122,7 @@ pipeline {
                 script {
                     try {
                         withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
-                            // 先更新 ECS service
-                           sh  """
-                               aws ecs update-service \
-                                   --cluster api-cluster \
-                                   --service api-service \
-                                   --force-new-deployment
-                               """
+
                             sh """
                                 echo "Deploying stack: api-stack-${params.ENV}"
                                 aws cloudformation deploy \
@@ -147,6 +141,13 @@ pipeline {
                                     --query 'Stacks[0].StackStatus' \
                                     --output text
                             """
+                            // 更新 ECS service
+                           sh  """
+                               aws ecs update-service \
+                                   --cluster api-cluster \
+                                   --service api-service \
+                                   --force-new-deployment
+                               """
                         }
                     } catch (Exception e) {
                         sh """
