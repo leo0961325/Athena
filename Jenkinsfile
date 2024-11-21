@@ -154,25 +154,27 @@ pipeline {
             }
         }
         stage('Force Update ECS') {
-            steps {
-                script {
-                    withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
-                        def timestamp = new Date().format("yyyyMMddHHmmss")
+           steps {
+               script {
+                   withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                       def timestamp = new Date().format("yyyyMMddHHmmss")
 
-                        sh """
-                            # 從最新 image 建立帶時間戳的 tag
-                            aws ecr docker tag athena:latest athena:${timestamp}
-                            aws ecr docker push athena:${timestamp}
+                       sh """
+                           # 為映像打上新標籤
+                           docker tag 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:latest 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:${timestamp}
 
-                            # 更新 service 使用新 tag
-                            aws ecs update-service \
-                                --cluster api-cluster \
-                                --service api-service \
-                                --force-new-deployment
-                        """
-                    }
-                }
-            }
+                           # 推送新標籤的映像
+                           docker push 194722439964.dkr.ecr.ap-southeast-1.amazonaws.com/athena:${timestamp}
+
+                           # 更新服務
+                           aws ecs update-service \
+                               --cluster api-cluster \
+                               --service api-service \
+                               --force-new-deployment
+                       """
+                   }
+               }
+           }
         }
     }
 
