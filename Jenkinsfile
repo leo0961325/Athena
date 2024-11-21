@@ -131,7 +131,7 @@ pipeline {
                                         CommitHash=${params.COMMIT_HASH} \
                                         Environment=${params.ENV} \
                                     --capabilities CAPABILITY_NAMED_IAM \
-                                    --no-fail-on-empty-changeset
+
 
                                 echo "Checking deployment status..."
                                 aws cloudformation describe-stacks \
