@@ -8,8 +8,6 @@ Parameters:
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
-    UpdateReplacePolicy: Replace
-    DeletionPolicy: Delete
     Properties:
       Family: !Ref AWS::StackName
       RequiresCompatibilities:
