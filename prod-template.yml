@@ -8,6 +8,8 @@ Parameters:
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
+    UpdateReplacePolicy: Replace
+    DeletionPolicy: Delete
     Properties:
       Family: api-service
       RequiresCompatibilities:
