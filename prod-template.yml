@@ -10,9 +10,6 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: api-service
-      Tags:
-        - Key: Version
-          Value: !Ref CommitHash
       RequiresCompatibilities:
         - "FARGATE"
       NetworkMode: "awsvpc"
