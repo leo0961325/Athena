@@ -132,14 +132,6 @@ pipeline {
                                         Environment=${params.ENV} \
                                     --capabilities CAPABILITY_NAMED_IAM \
 
-
-                                    TASK_DEF=\$(aws ecs list-task-definitions --family-prefix api-service --sort DESC --max-items 1 --query 'taskDefinitionArns[0]' --output text)
-                                    aws ecs update-service \
-                                        --cluster api-cluster \
-                                        --service api-service \
-                                        --task-definition \$TASK_DEF \
-                                        --force-new-deployment
-
                                 echo "Checking deployment status..."
                                 aws cloudformation describe-stacks \
                                     --stack-name api-stack-${params.ENV} \
@@ -160,6 +152,22 @@ pipeline {
                     }
                 }
             }
+        }
+
+        stage('Force Update ECS') {
+           steps {
+               script {
+                   sh """
+                       SERVICE_TASK_DEF=\$(aws ecs describe-services --cluster api-cluster --services api-service --query 'services[0].taskDefinition' --output text)
+
+                       aws ecs update-service \
+                           --cluster api-cluster \
+                           --service api-service \
+                           --task-definition \$SERVICE_TASK_DEF \
+                           --force-new-deployment
+                   """
+               }
+           }
         }
     }
 
